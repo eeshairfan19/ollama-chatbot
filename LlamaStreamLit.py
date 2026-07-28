@@ -37,6 +37,15 @@ def generate_response(Question):
 
     st.info(reply)
 
+st.subheader("Conversation History")
+
+for message in st.session_state.messages:
+    if message["role"] == "user":
+        st.write("You:", message["content"])
+    else:
+        st.write("Assistant:", message["content"])
+
+
 with st.form("MyForm"):
     text = st.text_area(
         "Enter text:",

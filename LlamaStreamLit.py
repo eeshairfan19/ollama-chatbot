@@ -4,14 +4,38 @@ desiredModel = "llama3.2:latest"
 
 st.title("LLM Web App")
 
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+if st.button("Reset Conversation"):
+    st.session_state.messages = []
+    st.rerun()    
+
+
 def generate_response(Question):
-    response = ollama.chat(model= desiredModel, messages =[
+
+    st.session_state.messages.append(
         {
             "role": "user",
-            "content" : Question,
-        },
-    ])
-    st.info(response["message"]["content"])
+            "content": Question,
+        }
+    )
+
+    response = ollama.chat(
+        model=desiredModel,
+        messages=st.session_state.messages,
+    )
+
+    reply = response["message"]["content"]
+
+    st.session_state.messages.append(
+        {
+            "role": "assistant",
+            "content": reply,
+        }
+    )
+
+    st.info(reply)
 
 with st.form("MyForm"):
     text = st.text_area(
